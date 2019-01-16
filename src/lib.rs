@@ -8,7 +8,7 @@ pub struct Vector4 {
 
 impl Vector4 {
   #[inline]
-  pub fn new(v: f32) -> Self {
+  pub fn from1(v: f32) -> Self {
     unsafe {
       let data = _mm_set_ps1(v);  
       Self {
@@ -44,14 +44,14 @@ mod tests {
 
     #[test]
     fn can_be_constructed() {
-        let v = Vector4::new(0.1);
+        let v = Vector4::from1(0.1);
         assert_approx_eq!(v.x(), 0.1);
     }
 
     #[test]
     fn adding_vectors() {
-        let v1 = Vector4::new(0.1);
-        let v2 = Vector4::new(1.8);
+        let v1 = Vector4::from1(0.1);
+        let v2 = Vector4::from1(1.8);
         let v3 = v1 + v2;
         assert_approx_eq!(v3.x(), 1.9);
     }
