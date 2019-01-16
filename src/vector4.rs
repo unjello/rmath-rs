@@ -29,6 +29,19 @@ impl Vector4 {
     }
   }
 
+  /// Creates Vector4 instance from four float values.
+  /// `x`, `y`, `z` and `w` will be set to the value
+  /// of appropriate parameter.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+  /// assert_approx_eq!(v.x(), 0.2);
+  /// assert_approx_eq!(v.y(), 1.1);
+  /// assert_approx_eq!(v.z(), -2.9);
+  /// assert_approx_eq!(v.w(), 99.9);
+  /// ```  
   #[inline]
   pub fn from4(x: f32, y: f32, z: f32, w: f32) -> Self {
     unsafe {
@@ -38,6 +51,14 @@ impl Vector4 {
     }
   }
 
+  /// Retrieves `x` component of `Vector4`.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+  /// assert_approx_eq!(v.x(), 0.2);
+  /// ```  
   #[inline]
   pub fn x(&self) -> f32 {
     unsafe {
@@ -45,6 +66,14 @@ impl Vector4 {
     }
   }
 
+  /// Retrieves `y` component of `Vector4`.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+  /// assert_approx_eq!(v.y(), 1.1);
+  /// ```  
   #[inline]
   pub fn y(&self) -> f32 {
     unsafe {
@@ -52,6 +81,14 @@ impl Vector4 {
     }
   }
 
+  /// Retrieves `z` component of `Vector4`.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+  /// assert_approx_eq!(v.z(), -2.9);
+  /// ```  
   #[inline]
   pub fn z(&self) -> f32 {
     unsafe {
@@ -59,6 +96,14 @@ impl Vector4 {
     }
   }
 
+  /// Retrieves `w` component of `Vector4`.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+  /// assert_approx_eq!(v.w(), 99.9);
+  /// ```  
   #[inline]
   pub fn w(&self) -> f32 {
     unsafe {
@@ -70,6 +115,20 @@ impl Vector4 {
 impl Add for Vector4 {
   type Output = Vector4;
 
+  /// Implements Add trait for Vector4.
+  /// Operator +(Vector4, Vector4).
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v1 = Vector4::from1(0.1);
+  /// let v2 = Vector4::from1(1.8);
+  /// let v3 = v1 + v2;
+  /// assert_approx_eq!(v3.x(), 1.9);
+  /// assert_approx_eq!(v3.y(), 1.9);
+  /// assert_approx_eq!(v3.z(), 1.9);
+  /// assert_approx_eq!(v3.w(), 1.9);
+  /// ```  
   fn add(self, other: Vector4) -> Vector4 { 
     unsafe {
       Self {
@@ -77,39 +136,4 @@ impl Add for Vector4 {
       }
     }
   }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use assert_approx_eq::assert_approx_eq;
-
-    #[test]
-    fn can_be_constructed_from1() {
-        let v = Vector4::from1(0.1);
-        assert_approx_eq!(v.x(), 0.1);
-        assert_approx_eq!(v.y(), 0.1);
-        assert_approx_eq!(v.z(), 0.1);
-        assert_approx_eq!(v.w(), 0.1);
-    }
-
-    #[test]
-    fn can_be_constructed_from4() {
-        let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
-        assert_approx_eq!(v.x(), 0.2);
-        assert_approx_eq!(v.y(), 1.1);
-        assert_approx_eq!(v.z(), -2.9);
-        assert_approx_eq!(v.w(), 99.9);
-    }
-
-    #[test]
-    fn adding_vectors() {
-        let v1 = Vector4::from1(0.1);
-        let v2 = Vector4::from1(1.8);
-        let v3 = v1 + v2;
-        assert_approx_eq!(v3.x(), 1.9);
-        assert_approx_eq!(v3.y(), 1.9);
-        assert_approx_eq!(v3.z(), 1.9);
-        assert_approx_eq!(v3.w(), 1.9);
-    }
 }
