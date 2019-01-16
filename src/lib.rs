@@ -1,4 +1,4 @@
-use core::arch::x86_64::{__m128,_mm_set_ps1, _mm_cvtss_f32, _mm_add_ps};
+use core::arch::x86_64::{__m128, _mm_set_ps, _mm_set_ps1, _mm_cvtss_f32, _mm_add_ps};
 use core::ops::Add;
 
 #[derive(Debug)]
@@ -13,6 +13,15 @@ impl Vector4 {
       let data = _mm_set_ps1(v);  
       Self {
         data
+      }
+    }
+  }
+
+  #[inline]
+  pub fn from4(x: f32, y: f32, z: f32, w: f32) -> Self {
+    unsafe {
+      Self {
+        data: _mm_set_ps(w, z, y, x)
       }
     }
   }
@@ -43,9 +52,15 @@ mod tests {
     use assert_approx_eq::assert_approx_eq;
 
     #[test]
-    fn can_be_constructed() {
+    fn can_be_constructed_from1() {
         let v = Vector4::from1(0.1);
         assert_approx_eq!(v.x(), 0.1);
+    }
+
+    #[test]
+    fn can_be_constructed_from4() {
+        let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+        assert_approx_eq!(v.x(), 0.2);
     }
 
     #[test]
