@@ -8,6 +8,18 @@ pub struct Vector4 {
 }
 
 impl Vector4 {
+  /// Creates Vector4 instance from one float value.
+  /// `x`, `y`, `z` and `w` will be set to the same value.
+  ///
+  /// ```
+  /// # use assert_approx_eq::assert_approx_eq;
+  /// use rmath_rs::Vector4;
+  /// let v = Vector4::from1(0.1);
+  /// assert_approx_eq!(v.x(), 0.1);
+  /// assert_approx_eq!(v.y(), 0.1);
+  /// assert_approx_eq!(v.z(), 0.1);
+  /// assert_approx_eq!(v.w(), 0.1);
+  /// ```
   #[inline]
   pub fn from1(v: f32) -> Self {
     unsafe {
