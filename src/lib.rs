@@ -10,9 +10,8 @@ impl Vector4 {
   #[inline]
   pub fn from1(v: f32) -> Self {
     unsafe {
-      let data = _mm_set_ps1(v);  
       Self {
-        data
+        data: _mm_set_ps1(v)
       }
     }
   }
