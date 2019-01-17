@@ -1,7 +1,8 @@
 use core::arch::x86_64::{
-    __m128, _mm_add_ps, _mm_cvtss_f32, _mm_set_ps, _mm_set_ps1, _mm_shuffle_ps,
+    __m128, _mm_add_ps, _mm_cvtss_f32, _mm_div_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1,
+    _mm_shuffle_ps, _mm_sub_ps,
 };
-use core::ops::Add;
+use core::ops::{Add, Div, Mul, Sub};
 
 #[derive(Debug)]
 pub struct Vector4 {
@@ -126,6 +127,84 @@ impl Add for Vector4 {
         unsafe {
             Self {
                 data: _mm_add_ps(self.data, other.data),
+            }
+        }
+    }
+}
+
+impl Sub for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Sub trait for Vector4.
+    /// Operator -(Vector4, Vector4).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = Vector4::from1(1.8);
+    /// let v3 = v1 - v2;
+    /// assert_approx_eq!(v3.x(), -1.7);
+    /// # assert_approx_eq!(v3.y(), -1.7);
+    /// # assert_approx_eq!(v3.z(), -1.7);
+    /// # assert_approx_eq!(v3.w(), -1.7);
+    /// ```  
+    fn sub(self, other: Vector4) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_sub_ps(self.data, other.data),
+            }
+        }
+    }
+}
+
+impl Mul for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Mul trait for Vector4.
+    /// Operator *(Vector4, Vector4).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = Vector4::from1(1.8);
+    /// let v3 = v1 * v2;
+    /// assert_approx_eq!(v3.x(), 0.18);
+    /// # assert_approx_eq!(v3.y(), 0.18);
+    /// # assert_approx_eq!(v3.z(), 0.18);
+    /// # assert_approx_eq!(v3.w(), 0.18);
+    /// ```  
+    fn mul(self, other: Vector4) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_mul_ps(self.data, other.data),
+            }
+        }
+    }
+}
+
+impl Div for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Div trait for Vector4.
+    /// Operator /(Vector4, Vector4).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = Vector4::from1(1.8);
+    /// let v3 = v1 / v2;
+    /// assert_approx_eq!(v3.x(), 0.055555556);
+    /// # assert_approx_eq!(v3.y(), 0.055555556);
+    /// # assert_approx_eq!(v3.z(), 0.055555556);
+    /// # assert_approx_eq!(v3.w(), 0.055555556);
+    /// ```  
+    fn div(self, other: Vector4) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_div_ps(self.data, other.data),
             }
         }
     }
