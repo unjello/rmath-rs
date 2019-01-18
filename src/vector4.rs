@@ -1,6 +1,6 @@
 use core::arch::x86_64::{
     __m128, _mm_add_ps, _mm_cvtss_f32, _mm_div_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1,
-    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps, _mm_andnot_ps, _mm_cmplt_ps, _mm_setzero_ps, _mm_and_ps
+    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps, _mm_andnot_ps, _mm_cmplt_ps, _mm_setzero_ps, _mm_and_ps, _mm_hadd_ps
 };
 use core::ops::{Add, Div, Mul, Sub, Neg};
 
@@ -216,6 +216,26 @@ impl Vector4 {
             Vector4 {
                 data: _mm_add_ps(ret.data, _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)))
             }
+        }
+    }
+
+    /// Computes value of distance squared
+    /// 
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = Vector4::from4(0.9, 1.8, 2.9, -14.4);
+    /// let d = v1.distance_sq(&v2);
+    /// assert_approx_eq!(d, 13099.11);
+    /// ``` 
+    #[inline]
+    pub fn distance_sq(&self, other: &Vector4) -> f32 {
+        unsafe {
+            let a_minus_b = _mm_sub_ps(self.data, other.data);
+            let a_minus_b_sq = _mm_mul_ps(a_minus_b, a_minus_b);
+            let h_add = _mm_hadd_ps(a_minus_b_sq, a_minus_b_sq);
+            _mm_cvtss_f32(_mm_hadd_ps(h_add, h_add))
         }
     }
 }
