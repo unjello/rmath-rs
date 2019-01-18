@@ -164,9 +164,9 @@ impl Vector4 {
     /// 
     /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/fract.xhtml
     #[inline]
-    pub fn fract(self) -> Vector4 {
+    pub fn fract(&self) -> Vector4 {
         let f = self.floor();
-        self - f
+        self - &f
     }
 
     /// Computes value of one parameter modulo another.
@@ -186,7 +186,7 @@ impl Vector4 {
     /// 
     /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mod.xhtml
     #[inline]
-    pub fn modulo(self, other: &Vector4) -> Vector4 {
+    pub fn modulo(&self, other: &Vector4) -> Vector4 {
         unsafe {
             Vector4 {
                 data: _mm_sub_ps(self.data, _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))))
@@ -209,7 +209,7 @@ impl Vector4 {
     /// assert_approx_eq!(v3.w(), 0.9, 1.0e-5);
     /// ``` 
     #[inline]
-    pub fn modulo_euclidean(self, other: &Vector4) -> Vector4 {
+    pub fn modulo_euclidean(&self, other: &Vector4) -> Vector4 {
         unsafe {
             let ret = self.modulo(&other);
             let mask = _mm_cmplt_ps(ret.data, _mm_setzero_ps());
@@ -220,7 +220,7 @@ impl Vector4 {
     }
 }
 
-impl Add<Vector4> for Vector4 {
+impl Add<&Vector4> for &Vector4 {
     type Output = Vector4;
 
     /// Implements Add trait for Vector4.
@@ -231,23 +231,23 @@ impl Add<Vector4> for Vector4 {
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
     /// let v2 = Vector4::from1(1.8);
-    /// let v3 = v1 + v2;
+    /// let v3 = &v1 + &v2;
     /// assert_approx_eq!(v3.x(), 1.9);
     /// assert_approx_eq!(v3.y(), 1.9);
     /// assert_approx_eq!(v3.z(), 1.9);
     /// assert_approx_eq!(v3.w(), 1.9);
     /// ``` 
     #[inline]
-    fn add(self, other: Vector4) -> Vector4 {
+    fn add(self, other: &Vector4) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_add_ps(self.data, other.data),
             }
         }
     }
 }
 
-impl Add<f32> for Vector4 {
+impl Add<f32> for &Vector4 {
     type Output = Vector4;
 
     /// Implements Add trait for Vector4.
@@ -257,7 +257,7 @@ impl Add<f32> for Vector4 {
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
-    /// let v2 = v1 + 1.8;
+    /// let v2 = &v1 + 1.8;
     /// assert_approx_eq!(v2.x(), 1.9);
     /// # assert_approx_eq!(v2.y(), 1.9);
     /// # assert_approx_eq!(v2.z(), 1.9);
@@ -266,14 +266,14 @@ impl Add<f32> for Vector4 {
     #[inline]
     fn add(self, other: f32) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_add_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
 }
 
-impl Sub for Vector4 {
+impl Sub for &Vector4 {
     type Output = Vector4;
 
     /// Implements Sub trait for Vector4.
@@ -284,23 +284,23 @@ impl Sub for Vector4 {
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
     /// let v2 = Vector4::from1(1.8);
-    /// let v3 = v1 - v2;
+    /// let v3 = &v1 - &v2;
     /// assert_approx_eq!(v3.x(), -1.7);
     /// # assert_approx_eq!(v3.y(), -1.7);
     /// # assert_approx_eq!(v3.z(), -1.7);
     /// # assert_approx_eq!(v3.w(), -1.7);
     /// ```  
     #[inline]
-    fn sub(self, other: Vector4) -> Vector4 {
+    fn sub(self, other: &Vector4) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_sub_ps(self.data, other.data),
             }
         }
     }
 }
 
-impl Sub<f32> for Vector4 {
+impl Sub<f32> for &Vector4 {
     type Output = Vector4;
 
     /// Implements Sub trait for Vector4.
@@ -310,7 +310,7 @@ impl Sub<f32> for Vector4 {
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
-    /// let v2 = v1 - 1.8;
+    /// let v2 = &v1 - 1.8;
     /// assert_approx_eq!(v2.x(), -1.7);
     /// # assert_approx_eq!(v2.y(), -1.7);
     /// # assert_approx_eq!(v2.z(), -1.7);
@@ -319,14 +319,14 @@ impl Sub<f32> for Vector4 {
     #[inline]
     fn sub(self, other: f32) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_sub_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
 }
 
-impl Mul for Vector4 {
+impl Mul for &Vector4 {
     type Output = Vector4;
 
     /// Implements Mul trait for Vector4.
@@ -337,23 +337,23 @@ impl Mul for Vector4 {
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
     /// let v2 = Vector4::from1(1.8);
-    /// let v3 = v1 * v2;
+    /// let v3 = &v1 * &v2;
     /// assert_approx_eq!(v3.x(), 0.18);
     /// # assert_approx_eq!(v3.y(), 0.18);
     /// # assert_approx_eq!(v3.z(), 0.18);
     /// # assert_approx_eq!(v3.w(), 0.18);
     /// ```  
     #[inline]
-    fn mul(self, other: Vector4) -> Vector4 {
+    fn mul(self, other: &Vector4) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_mul_ps(self.data, other.data),
             }
         }
     }
 }
 
-impl Mul<f32> for Vector4 {
+impl Mul<f32> for &Vector4 {
     type Output = Vector4;
 
     /// Implements Mul trait for Vector4.
@@ -363,7 +363,7 @@ impl Mul<f32> for Vector4 {
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
-    /// let v2 = v1 * 1.8;
+    /// let v2 = &v1 * 1.8;
     /// assert_approx_eq!(v2.x(), 0.18);
     /// # assert_approx_eq!(v2.y(), 0.18);
     /// # assert_approx_eq!(v2.z(), 0.18);
@@ -372,14 +372,14 @@ impl Mul<f32> for Vector4 {
     #[inline]
     fn mul(self, other: f32) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_mul_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
 }
 
-impl Div for Vector4 {
+impl Div for &Vector4 {
     type Output = Vector4;
 
     /// Implements Div trait for Vector4.
@@ -390,23 +390,23 @@ impl Div for Vector4 {
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
     /// let v2 = Vector4::from1(1.8);
-    /// let v3 = v1 / v2;
+    /// let v3 = &v1 / &v2;
     /// assert_approx_eq!(v3.x(), 0.055555556);
     /// # assert_approx_eq!(v3.y(), 0.055555556);
     /// # assert_approx_eq!(v3.z(), 0.055555556);
     /// # assert_approx_eq!(v3.w(), 0.055555556);
     /// ```  
     #[inline]
-    fn div(self, other: Vector4) -> Vector4 {
+    fn div(self, other: &Vector4) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_div_ps(self.data, other.data),
             }
         }
     }
 }
 
-impl Div<f32> for Vector4 {
+impl Div<f32> for &Vector4 {
     type Output = Vector4;
 
     /// Implements Div trait for Vector4.
@@ -416,7 +416,7 @@ impl Div<f32> for Vector4 {
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
     /// let v1 = Vector4::from1(0.1);
-    /// let v2 = v1 / 1.8;
+    /// let v2 = &v1 / 1.8;
     /// assert_approx_eq!(v2.x(), 0.055555556);
     /// # assert_approx_eq!(v2.y(), 0.055555556);
     /// # assert_approx_eq!(v2.z(), 0.055555556);
@@ -425,14 +425,14 @@ impl Div<f32> for Vector4 {
     #[inline]
     fn div(self, other: f32) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_div_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
 }
 
-impl Neg for Vector4 {
+impl Neg for &Vector4 {
     type Output = Vector4;
 
     /// Implements Neg trait for Vector4.
@@ -442,7 +442,7 @@ impl Neg for Vector4 {
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
     /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
-    /// let v2 = -v;
+    /// let v2 = -&v;
     /// assert_approx_eq!(v2.x(), -0.2);
     /// assert_approx_eq!(v2.y(), -1.1);
     /// assert_approx_eq!(v2.z(), 2.9);
@@ -451,7 +451,7 @@ impl Neg for Vector4 {
     #[inline]
     fn neg(self) -> Vector4 {
         unsafe {
-            Self {
+            Vector4 {
                 data: _mm_xor_ps(self.data, _mm_set_ps1(-0.0)),
             }
         }
