@@ -148,6 +148,26 @@ impl Vector4 {
             }
         }
     }
+
+    /// Computes the fractional part of the argument
+    /// 
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = v.fract();
+    /// assert_approx_eq!(v2.x(), 0.2);
+    /// assert_approx_eq!(v2.y(), 0.1);
+    /// assert_approx_eq!(v2.z(), 0.1);
+    /// assert_approx_eq!(v2.w(), 0.9, 1.0e-5); // this one becomes 0.9000015 with regular 1.0e-6 precision :/
+    /// ``` 
+    /// 
+    /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/fract.xhtml
+    #[inline]
+    pub fn fract(self) -> Vector4 {
+        let f = self.floor();
+        self - f
+    }
 }
 
 impl Add<Vector4> for Vector4 {
