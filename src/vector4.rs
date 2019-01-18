@@ -151,7 +151,7 @@ impl Add<f32> for Vector4 {
     fn add(self, other: f32) -> Vector4 {
         unsafe {
             Self {
-                data: _mm_add_ps(self.data, _mm_set_ps1(other))
+                data: _mm_add_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
