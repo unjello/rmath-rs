@@ -1,6 +1,6 @@
 use core::arch::x86_64::{
     __m128, _mm_add_ps, _mm_cvtss_f32, _mm_div_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1,
-    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps, _mm_andnot_ps
+    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps, _mm_andnot_ps, _mm_cmplt_ps, _mm_setzero_ps, _mm_and_ps
 };
 use core::ops::{Add, Div, Mul, Sub, Neg};
 
@@ -167,6 +167,31 @@ impl Vector4 {
     pub fn fract(self) -> Vector4 {
         let f = self.floor();
         self - f
+    }
+
+    /// Computes value of one parameter modulo another.
+    /// Consistent with GLSL implementation
+    /// 
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = Vector4::from1(-1.8);
+    /// let v3 = v.modulo(v2);
+    /// assert_approx_eq!(v3.x(), -1.6);
+    /// assert_approx_eq!(v3.y(), -0.7);
+    /// assert_approx_eq!(v3.z(), -1.1);
+    /// assert_approx_eq!(v3.w(), -0.9, 1.0e-5);
+    /// ``` 
+    /// 
+    /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mod.xhtml
+    #[inline]
+    pub fn modulo(self, other: Vector4) -> Vector4 {
+        unsafe {
+            Vector4 {
+                data: _mm_sub_ps(self.data, _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))))
+            }
+        }
     }
 }
 
