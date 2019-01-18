@@ -106,7 +106,7 @@ impl Vector4 {
     }
 }
 
-impl Add for Vector4 {
+impl Add<Vector4> for Vector4 {
     type Output = Vector4;
 
     /// Implements Add trait for Vector4.
@@ -127,6 +127,30 @@ impl Add for Vector4 {
         unsafe {
             Self {
                 data: _mm_add_ps(self.data, other.data),
+            }
+        }
+    }
+}
+
+/// Implements Add trait for Vector4.
+/// Operator +(Vector4, f32).
+///
+/// ```
+/// # use assert_approx_eq::assert_approx_eq;
+/// use rmath_rs::Vector4;
+/// let v1 = Vector4::from1(0.1);
+/// let v2 = v1 + 1.8;
+/// assert_approx_eq!(v2.x(), 1.9);
+/// # assert_approx_eq!(v2.y(), 1.9);
+/// # assert_approx_eq!(v2.z(), 1.9);
+/// # assert_approx_eq!(v2.w(), 1.9);
+/// ```  
+impl Add<f32> for Vector4 {
+    type Output = Vector4;
+    fn add(self, other: f32) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_add_ps(self.data, _mm_set_ps1(other))
             }
         }
     }
