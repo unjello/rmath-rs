@@ -177,7 +177,7 @@ impl Vector4 {
     /// use rmath_rs::Vector4;
     /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
     /// let v2 = Vector4::from1(-1.8);
-    /// let v3 = v.modulo(v2);
+    /// let v3 = v.modulo(&v2);
     /// assert_approx_eq!(v3.x(), -1.6);
     /// assert_approx_eq!(v3.y(), -0.7);
     /// assert_approx_eq!(v3.z(), -1.1);
@@ -186,10 +186,35 @@ impl Vector4 {
     /// 
     /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mod.xhtml
     #[inline]
-    pub fn modulo(self, other: Vector4) -> Vector4 {
+    pub fn modulo(self, other: &Vector4) -> Vector4 {
         unsafe {
             Vector4 {
                 data: _mm_sub_ps(self.data, _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))))
+            }
+        }
+    }
+
+    /// Computes value of one parameter modulo another.
+    /// Consistent with [Euclidean](https://en.wikipedia.org/wiki/Modulo_operation) division algorithm.
+    /// 
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = Vector4::from1(-1.8);
+    /// let v3 = v.modulo_euclidean(&v2);
+    /// assert_approx_eq!(v3.x(), 0.2);
+    /// assert_approx_eq!(v3.y(), 1.1);
+    /// assert_approx_eq!(v3.z(), 0.7);
+    /// assert_approx_eq!(v3.w(), 0.9, 1.0e-5);
+    /// ``` 
+    #[inline]
+    pub fn modulo_euclidean(self, other: &Vector4) -> Vector4 {
+        unsafe {
+            let ret = self.modulo(&other);
+            let mask = _mm_cmplt_ps(ret.data, _mm_setzero_ps());
+            Vector4 {
+                data: _mm_add_ps(ret.data, _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)))
             }
         }
     }
