@@ -183,6 +183,31 @@ impl Sub for Vector4 {
     }
 }
 
+impl Sub<f32> for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Sub trait for Vector4.
+    /// Operator -(Vector4, f32).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = v1 - 1.8;
+    /// assert_approx_eq!(v2.x(), -1.7);
+    /// # assert_approx_eq!(v2.y(), -1.7);
+    /// # assert_approx_eq!(v2.z(), -1.7);
+    /// # assert_approx_eq!(v2.w(), -1.7);
+    /// ```  
+    fn sub(self, other: f32) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_sub_ps(self.data, _mm_set_ps1(other)),
+            }
+        }
+    }
+}
+
 impl Mul for Vector4 {
     type Output = Vector4;
 
@@ -209,6 +234,31 @@ impl Mul for Vector4 {
     }
 }
 
+impl Mul<f32> for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Mul trait for Vector4.
+    /// Operator *(Vector4, f32).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = v1 * 1.8;
+    /// assert_approx_eq!(v2.x(), 0.18);
+    /// # assert_approx_eq!(v2.y(), 0.18);
+    /// # assert_approx_eq!(v2.z(), 0.18);
+    /// # assert_approx_eq!(v2.w(), 0.18);
+    /// ```  
+    fn mul(self, other: f32) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_mul_ps(self.data, _mm_set_ps1(other)),
+            }
+        }
+    }
+}
+
 impl Div for Vector4 {
     type Output = Vector4;
 
@@ -230,6 +280,31 @@ impl Div for Vector4 {
         unsafe {
             Self {
                 data: _mm_div_ps(self.data, other.data),
+            }
+        }
+    }
+}
+
+impl Div<f32> for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Div trait for Vector4.
+    /// Operator /(Vector4, f32).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from1(0.1);
+    /// let v2 = v1 / 1.8;
+    /// assert_approx_eq!(v2.x(), 0.055555556);
+    /// # assert_approx_eq!(v2.y(), 0.055555556);
+    /// # assert_approx_eq!(v2.z(), 0.055555556);
+    /// # assert_approx_eq!(v2.w(), 0.055555556);
+    /// ```  
+    fn div(self, other: f32) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_div_ps(self.data, _mm_set_ps1(other)),
             }
         }
     }
