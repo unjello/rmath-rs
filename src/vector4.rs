@@ -219,7 +219,7 @@ impl Vector4 {
         }
     }
 
-    /// Computes value of distance squared
+    /// Computes value of distance squared between two vectors
     /// 
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
@@ -237,6 +237,21 @@ impl Vector4 {
             let h_add = _mm_hadd_ps(a_minus_b_sq, a_minus_b_sq);
             _mm_cvtss_f32(_mm_hadd_ps(h_add, h_add))
         }
+    }
+
+    /// Computes value of distance between two vectors
+    /// 
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v1 = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = Vector4::from4(0.9, 1.8, 2.9, -14.4);
+    /// let d = v1.distance(&v2);
+    /// assert_approx_eq!(d, 114.45134, 1.0e-5);
+    /// ``` 
+    #[inline]
+    pub fn distance(&self, other: &Vector4) -> f32 {
+        self.distance_sq(other).sqrt()
     }
 }
 
