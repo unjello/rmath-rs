@@ -122,7 +122,8 @@ impl Add<Vector4> for Vector4 {
     /// assert_approx_eq!(v3.y(), 1.9);
     /// assert_approx_eq!(v3.z(), 1.9);
     /// assert_approx_eq!(v3.w(), 1.9);
-    /// ```  
+    /// ``` 
+    #[inline]
     fn add(self, other: Vector4) -> Vector4 {
         unsafe {
             Self {
@@ -148,6 +149,7 @@ impl Add<f32> for Vector4 {
     /// # assert_approx_eq!(v2.z(), 1.9);
     /// # assert_approx_eq!(v2.w(), 1.9);
     /// ```  
+    #[inline]
     fn add(self, other: f32) -> Vector4 {
         unsafe {
             Self {
@@ -174,6 +176,7 @@ impl Sub for Vector4 {
     /// # assert_approx_eq!(v3.z(), -1.7);
     /// # assert_approx_eq!(v3.w(), -1.7);
     /// ```  
+    #[inline]
     fn sub(self, other: Vector4) -> Vector4 {
         unsafe {
             Self {
@@ -199,6 +202,7 @@ impl Sub<f32> for Vector4 {
     /// # assert_approx_eq!(v2.z(), -1.7);
     /// # assert_approx_eq!(v2.w(), -1.7);
     /// ```  
+    #[inline]
     fn sub(self, other: f32) -> Vector4 {
         unsafe {
             Self {
@@ -225,6 +229,7 @@ impl Mul for Vector4 {
     /// # assert_approx_eq!(v3.z(), 0.18);
     /// # assert_approx_eq!(v3.w(), 0.18);
     /// ```  
+    #[inline]
     fn mul(self, other: Vector4) -> Vector4 {
         unsafe {
             Self {
@@ -250,6 +255,7 @@ impl Mul<f32> for Vector4 {
     /// # assert_approx_eq!(v2.z(), 0.18);
     /// # assert_approx_eq!(v2.w(), 0.18);
     /// ```  
+    #[inline]
     fn mul(self, other: f32) -> Vector4 {
         unsafe {
             Self {
@@ -276,6 +282,7 @@ impl Div for Vector4 {
     /// # assert_approx_eq!(v3.z(), 0.055555556);
     /// # assert_approx_eq!(v3.w(), 0.055555556);
     /// ```  
+    #[inline]
     fn div(self, other: Vector4) -> Vector4 {
         unsafe {
             Self {
@@ -301,6 +308,7 @@ impl Div<f32> for Vector4 {
     /// # assert_approx_eq!(v2.z(), 0.055555556);
     /// # assert_approx_eq!(v2.w(), 0.055555556);
     /// ```  
+    #[inline]
     fn div(self, other: f32) -> Vector4 {
         unsafe {
             Self {
