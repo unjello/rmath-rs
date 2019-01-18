@@ -1,8 +1,8 @@
 use core::arch::x86_64::{
     __m128, _mm_add_ps, _mm_cvtss_f32, _mm_div_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1,
-    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps
+    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps
 };
-use core::ops::{Add, Div, Mul, Sub};
+use core::ops::{Add, Div, Mul, Sub, Neg};
 
 #[derive(Debug)]
 pub struct Vector4 {
@@ -335,6 +335,32 @@ impl Div<f32> for Vector4 {
         unsafe {
             Self {
                 data: _mm_div_ps(self.data, _mm_set_ps1(other)),
+            }
+        }
+    }
+}
+
+impl Neg for Vector4 {
+    type Output = Vector4;
+
+    /// Implements Neg trait for Vector4.
+    /// Operator -(Vector4).
+    ///
+    /// ```
+    /// # use assert_approx_eq::assert_approx_eq;
+    /// use rmath_rs::Vector4;
+    /// let v = Vector4::from4(0.2, 1.1, -2.9, 99.9);
+    /// let v2 = -v;
+    /// assert_approx_eq!(v2.x(), -0.2);
+    /// assert_approx_eq!(v2.y(), -1.1);
+    /// assert_approx_eq!(v2.z(), 2.9);
+    /// assert_approx_eq!(v2.w(), -99.9);
+    /// ```  
+    #[inline]
+    fn neg(self) -> Vector4 {
+        unsafe {
+            Self {
+                data: _mm_xor_ps(self.data, _mm_set_ps1(-0.0)),
             }
         }
     }
