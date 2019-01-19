@@ -1,8 +1,9 @@
 use core::arch::x86_64::{
-    __m128, _mm_add_ps, _mm_cvtss_f32, _mm_div_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1,
-    _mm_shuffle_ps, _mm_sub_ps, _mm_floor_ps, _mm_xor_ps, _mm_andnot_ps, _mm_cmplt_ps, _mm_setzero_ps, _mm_and_ps, _mm_hadd_ps
+    __m128, _mm_add_ps, _mm_and_ps, _mm_andnot_ps, _mm_cmplt_ps, _mm_cvtss_f32, _mm_div_ps,
+    _mm_floor_ps, _mm_hadd_ps, _mm_mul_ps, _mm_set_ps, _mm_set_ps1, _mm_setzero_ps, _mm_shuffle_ps,
+    _mm_sub_ps, _mm_xor_ps,
 };
-use core::ops::{Add, Div, Mul, Sub, Neg};
+use core::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug)]
 pub struct Vector4 {
@@ -106,7 +107,7 @@ impl Vector4 {
     }
 
     /// Finds the nearest integer less than or equal to the parameter
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -116,20 +117,19 @@ impl Vector4 {
     /// assert_approx_eq!(v2.y(), 1.0);
     /// assert_approx_eq!(v2.z(), -3.0);
     /// assert_approx_eq!(v2.w(), 99.0);
-    /// ``` 
+    /// ```
     /// See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/floor.xhtml
     #[inline]
     pub fn floor(&self) -> Vector4 {
-        unsafe { 
-            Vector4 { 
-                data: _mm_floor_ps(self.data)
+        unsafe {
+            Vector4 {
+                data: _mm_floor_ps(self.data),
             }
         }
     }
 
-
     /// Finds absolute value of parameter
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -139,7 +139,7 @@ impl Vector4 {
     /// assert_approx_eq!(v2.y(), 1.1);
     /// assert_approx_eq!(v2.z(), 2.9);
     /// assert_approx_eq!(v2.w(), 99.9);
-    /// ``` 
+    /// ```
     #[inline]
     pub fn abs(&self) -> Vector4 {
         unsafe {
@@ -150,7 +150,7 @@ impl Vector4 {
     }
 
     /// Computes the fractional part of the argument
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -160,8 +160,8 @@ impl Vector4 {
     /// assert_approx_eq!(v2.y(), 0.1);
     /// assert_approx_eq!(v2.z(), 0.1);
     /// assert_approx_eq!(v2.w(), 0.9, 1.0e-5); // this one becomes 0.9000015 with regular 1.0e-6 precision :/
-    /// ``` 
-    /// 
+    /// ```
+    ///
     /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/fract.xhtml
     #[inline]
     pub fn fract(&self) -> Vector4 {
@@ -171,7 +171,7 @@ impl Vector4 {
 
     /// Computes value of one parameter modulo another.
     /// Consistent with GLSL implementation
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -182,21 +182,24 @@ impl Vector4 {
     /// assert_approx_eq!(v3.y(), -0.7);
     /// assert_approx_eq!(v3.z(), -1.1);
     /// assert_approx_eq!(v3.w(), -0.9, 1.0e-5);
-    /// ``` 
-    /// 
+    /// ```
+    ///
     /// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mod.xhtml
     #[inline]
     pub fn modulo(&self, other: &Vector4) -> Vector4 {
         unsafe {
             Vector4 {
-                data: _mm_sub_ps(self.data, _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))))
+                data: _mm_sub_ps(
+                    self.data,
+                    _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))),
+                ),
             }
         }
     }
 
     /// Computes value of one parameter modulo another.
     /// Consistent with [Euclidean](https://en.wikipedia.org/wiki/Modulo_operation) division algorithm.
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -207,20 +210,23 @@ impl Vector4 {
     /// assert_approx_eq!(v3.y(), 1.1);
     /// assert_approx_eq!(v3.z(), 0.7);
     /// assert_approx_eq!(v3.w(), 0.9, 1.0e-5);
-    /// ``` 
+    /// ```
     #[inline]
     pub fn modulo_euclidean(&self, other: &Vector4) -> Vector4 {
         unsafe {
             let ret = self.modulo(&other);
             let mask = _mm_cmplt_ps(ret.data, _mm_setzero_ps());
             Vector4 {
-                data: _mm_add_ps(ret.data, _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)))
+                data: _mm_add_ps(
+                    ret.data,
+                    _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)),
+                ),
             }
         }
     }
 
     /// Computes value of distance squared between two vectors
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -228,7 +234,7 @@ impl Vector4 {
     /// let v2 = Vector4::from4(0.9, 1.8, 2.9, -14.4);
     /// let d = v1.distance_sq(&v2);
     /// assert_approx_eq!(d, 13099.11);
-    /// ``` 
+    /// ```
     #[inline]
     pub fn distance_sq(&self, other: &Vector4) -> f32 {
         unsafe {
@@ -240,7 +246,7 @@ impl Vector4 {
     }
 
     /// Computes value of distance between two vectors
-    /// 
+    ///
     /// ```
     /// # use assert_approx_eq::assert_approx_eq;
     /// use rmath_rs::Vector4;
@@ -248,7 +254,7 @@ impl Vector4 {
     /// let v2 = Vector4::from4(0.9, 1.8, 2.9, -14.4);
     /// let d = v1.distance(&v2);
     /// assert_approx_eq!(d, 114.45134, 1.0e-5);
-    /// ``` 
+    /// ```
     #[inline]
     pub fn distance(&self, other: &Vector4) -> f32 {
         self.distance_sq(other).sqrt()
@@ -271,7 +277,7 @@ impl Add<&Vector4> for &Vector4 {
     /// assert_approx_eq!(v3.y(), 1.9);
     /// assert_approx_eq!(v3.z(), 1.9);
     /// assert_approx_eq!(v3.w(), 1.9);
-    /// ``` 
+    /// ```
     #[inline]
     fn add(self, other: &Vector4) -> Vector4 {
         unsafe {
