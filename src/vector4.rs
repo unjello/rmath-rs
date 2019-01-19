@@ -11,6 +11,12 @@ pub struct Vector4 {
 }
 
 impl Vector4 {
+    /// Creates Vector4 instance from SIMD __m128
+    #[inline]
+    fn from128(v: __m128) -> Vector4 {
+        Vector4 { data: v }
+    }
+
     /// Creates Vector4 instance from one float value.
     /// `x`, `y`, `z` and `w` will be set to the same value.
     ///
@@ -25,11 +31,7 @@ impl Vector4 {
     /// ```
     #[inline]
     pub fn from1(v: f32) -> Self {
-        unsafe {
-            Self {
-                data: _mm_set_ps1(v),
-            }
-        }
+        unsafe { Vector4::from128(_mm_set_ps1(v)) }
     }
 
     /// Creates Vector4 instance from four float values.
@@ -47,11 +49,7 @@ impl Vector4 {
     /// ```  
     #[inline]
     pub fn from4(x: f32, y: f32, z: f32, w: f32) -> Self {
-        unsafe {
-            Self {
-                data: _mm_set_ps(w, z, y, x),
-            }
-        }
+        unsafe { Vector4::from128(_mm_set_ps(w, z, y, x)) }
     }
 
     /// Retrieves `x` component of `Vector4`.
@@ -121,11 +119,7 @@ impl Vector4 {
     /// See: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/floor.xhtml
     #[inline]
     pub fn floor(&self) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_floor_ps(self.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_floor_ps(self.data)) }
     }
 
     /// Finds absolute value of parameter
@@ -142,11 +136,7 @@ impl Vector4 {
     /// ```
     #[inline]
     pub fn abs(&self) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_andnot_ps(_mm_set_ps1(-0.0), self.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_andnot_ps(_mm_set_ps1(-0.0), self.data)) }
     }
 
     /// Computes the fractional part of the argument
@@ -188,12 +178,10 @@ impl Vector4 {
     #[inline]
     pub fn modulo(&self, other: &Vector4) -> Vector4 {
         unsafe {
-            Vector4 {
-                data: _mm_sub_ps(
-                    self.data,
-                    _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))),
-                ),
-            }
+            Vector4::from128(_mm_sub_ps(
+                self.data,
+                _mm_mul_ps(other.data, _mm_floor_ps(_mm_div_ps(self.data, other.data))),
+            ))
         }
     }
 
@@ -216,12 +204,10 @@ impl Vector4 {
         unsafe {
             let ret = self.modulo(&other);
             let mask = _mm_cmplt_ps(ret.data, _mm_setzero_ps());
-            Vector4 {
-                data: _mm_add_ps(
-                    ret.data,
-                    _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)),
-                ),
-            }
+            Vector4::from128(_mm_add_ps(
+                ret.data,
+                _mm_and_ps(mask, _mm_andnot_ps(_mm_set_ps1(-0.0), other.data)),
+            ))
         }
     }
 
@@ -280,11 +266,7 @@ impl Add<&Vector4> for &Vector4 {
     /// ```
     #[inline]
     fn add(self, other: &Vector4) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_add_ps(self.data, other.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_add_ps(self.data, other.data)) }
     }
 }
 
@@ -306,11 +288,7 @@ impl Add<f32> for &Vector4 {
     /// ```  
     #[inline]
     fn add(self, other: f32) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_add_ps(self.data, _mm_set_ps1(other)),
-            }
-        }
+        unsafe { Vector4::from128(_mm_add_ps(self.data, _mm_set_ps1(other))) }
     }
 }
 
@@ -333,11 +311,7 @@ impl Sub for &Vector4 {
     /// ```  
     #[inline]
     fn sub(self, other: &Vector4) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_sub_ps(self.data, other.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_sub_ps(self.data, other.data)) }
     }
 }
 
@@ -359,11 +333,7 @@ impl Sub<f32> for &Vector4 {
     /// ```  
     #[inline]
     fn sub(self, other: f32) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_sub_ps(self.data, _mm_set_ps1(other)),
-            }
-        }
+        unsafe { Vector4::from128(_mm_sub_ps(self.data, _mm_set_ps1(other))) }
     }
 }
 
@@ -386,11 +356,7 @@ impl Mul for &Vector4 {
     /// ```  
     #[inline]
     fn mul(self, other: &Vector4) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_mul_ps(self.data, other.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_mul_ps(self.data, other.data)) }
     }
 }
 
@@ -412,11 +378,7 @@ impl Mul<f32> for &Vector4 {
     /// ```  
     #[inline]
     fn mul(self, other: f32) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_mul_ps(self.data, _mm_set_ps1(other)),
-            }
-        }
+        unsafe { Vector4::from128(_mm_mul_ps(self.data, _mm_set_ps1(other))) }
     }
 }
 
@@ -439,11 +401,7 @@ impl Div for &Vector4 {
     /// ```  
     #[inline]
     fn div(self, other: &Vector4) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_div_ps(self.data, other.data),
-            }
-        }
+        unsafe { Vector4::from128(_mm_div_ps(self.data, other.data)) }
     }
 }
 
@@ -465,11 +423,7 @@ impl Div<f32> for &Vector4 {
     /// ```  
     #[inline]
     fn div(self, other: f32) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_div_ps(self.data, _mm_set_ps1(other)),
-            }
-        }
+        unsafe { Vector4::from128(_mm_div_ps(self.data, _mm_set_ps1(other))) }
     }
 }
 
@@ -491,10 +445,6 @@ impl Neg for &Vector4 {
     /// ```  
     #[inline]
     fn neg(self) -> Vector4 {
-        unsafe {
-            Vector4 {
-                data: _mm_xor_ps(self.data, _mm_set_ps1(-0.0)),
-            }
-        }
+        unsafe { Vector4::from128(_mm_xor_ps(self.data, _mm_set_ps1(-0.0))) }
     }
 }
