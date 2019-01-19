@@ -1,7 +1,9 @@
 [package]
 name = "rmath-rs"
+description = "collection of GLSL/HLSL-like vector math to make software-rendering more convenient"
 version = "0.1.0"
 authors = ["Andrzej Lichnerowicz <andrzej@lichnerowicz.pl>"]
+license = "CC0-1.0"
 edition = "2018"
 
 [dependencies]
