@@ -1,9 +1,13 @@
 [package]
 name = "rmath-rs"
 description = "collection of GLSL/HLSL-like vector math to make software-rendering more convenient"
+keywords = ["vector", "math", "rendering"]
+categories = ["rendering"]
 version = "0.1.0"
 authors = ["Andrzej Lichnerowicz <andrzej@lichnerowicz.pl>"]
 license = "CC0-1.0"
+repository = "https://github.com/unjello/rmath-rs"
+documentation = "https://docs.rs/rmath-rs/0.1.0/rmath_rs/"
 edition = "2018"
 
 [dependencies]
