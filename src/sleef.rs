@@ -1,5 +1,12 @@
 use core::arch::x86_64::*;
 
+#[macro_export]
+macro_rules! vsrl_vi2_vi2_i {
+  ($x: expr, $c: expr) => {
+    unsafe { _mm_srli_epi32($x, $c) }  
+  }
+}
+
 #[inline]
 pub fn vcast_vf_f(f: f32) -> __m128 { unsafe { _mm_set1_ps(f) } }
 #[inline]
@@ -28,3 +35,19 @@ pub fn vreinterpret_vd_vm(vm: __m128i) -> __m128d { unsafe { _mm_castsi128_pd(vm
 pub fn vsel_vf_vo_vf_vf(o: __m128i, x: __m128, y: __m128) -> __m128 { unsafe { _mm_blendv_ps(y, x, _mm_castsi128_ps(o)) } }
 #[inline]
 pub fn vreinterpret_vm_vd(vd: __m128d) -> __m128i { unsafe { _mm_castpd_si128(vd)  } } 
+#[inline]
+pub fn vilogb2k_vi2_vf(d: __m128) -> __m128i {
+  let q = vreinterpret_vi2_vf(d);
+  let q = vsrl_vi2_vi2_i!(q, 23);
+  let q = vand_vi2_vi2_vi2(q, vcast_vi2_i(0xff));
+  let q = vsub_vi2_vi2_vi2(q, vcast_vi2_i(0x7f));
+  return q;
+}
+#[inline]
+pub fn vreinterpret_vi2_vf(vf: __m128) -> __m128i { vreinterpret_vm_vf(vf) }
+#[inline]
+pub fn vand_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_and_si128(x, y) } }
+#[inline]
+pub fn vsub_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_sub_epi32(x, y) } }
+#[inline]
+pub fn vcast_vi2_i(i: i32) -> __m128i { unsafe { _mm_set1_epi32(i) } }
