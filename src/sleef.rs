@@ -7,6 +7,13 @@ macro_rules! vsrl_vi2_vi2_i {
   }
 }
 
+#[macro_export]
+macro_rules! vsra_vi2_vi2_i {
+  ($x: expr, $c: expr) => {
+    unsafe { _mm_srai_epi32(x, c) }
+  }
+}
+
 #[inline]
 pub fn vcast_vf_f(f: f32) -> __m128 { unsafe { _mm_set1_ps(f) } }
 #[inline]
@@ -51,3 +58,9 @@ pub fn vand_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_and_si
 pub fn vsub_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_sub_epi32(x, y) } }
 #[inline]
 pub fn vcast_vi2_i(i: i32) -> __m128i { unsafe { _mm_set1_epi32(i) } }
+#[inline]
+pub fn vandnot_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_andnot_si128(x, y) } }
+#[inline]
+pub fn vgt_vo_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_cmpgt_epi32(x, y) } }
+#[inline]
+pub fn vand_vi2_vo_vi2(x: __m128i, y: __m128i) -> __m128i { vand_vi2_vi2_vi2(x, y)  }
