@@ -10,7 +10,14 @@ macro_rules! vsrl_vi2_vi2_i {
 #[macro_export]
 macro_rules! vsra_vi2_vi2_i {
   ($x: expr, $c: expr) => {
-    unsafe { _mm_srai_epi32(x, c) }
+    unsafe { _mm_srai_epi32($x, $c) }
+  }
+}
+
+#[macro_export]
+macro_rules!  vsll_vi2_vi2_i { 
+  ($x: expr, $c: expr) => {
+     unsafe { _mm_slli_epi32($x, $c) }
   }
 }
 
@@ -53,6 +60,8 @@ pub fn vilogb2k_vi2_vf(d: __m128) -> __m128i {
 #[inline]
 pub fn vreinterpret_vi2_vf(vf: __m128) -> __m128i { vreinterpret_vm_vf(vf) }
 #[inline]
+pub fn vreinterpret_vf_vi2(vf: __m128i) -> __m128 { vreinterpret_vf_vm(vf) }
+#[inline]
 pub fn vand_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_and_si128(x, y) } }
 #[inline]
 pub fn vsub_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_sub_epi32(x, y) } }
@@ -64,3 +73,9 @@ pub fn vandnot_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_and
 pub fn vgt_vo_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe { _mm_cmpgt_epi32(x, y) } }
 #[inline]
 pub fn vand_vi2_vo_vi2(x: __m128i, y: __m128i) -> __m128i { vand_vi2_vi2_vi2(x, y)  }
+#[inline]
+pub fn vldexp3_vf_vf_vi2(d: __m128, q: __m128i) -> __m128 {
+  vreinterpret_vf_vi2(vadd_vi2_vi2_vi2(vreinterpret_vi2_vf(d), vsll_vi2_vi2_i!(q, 23)))
+}
+#[inline]
+pub fn vadd_vi2_vi2_vi2(x: __m128i, y: __m128i) -> __m128i { unsafe {  _mm_add_epi32(x, y) } }
